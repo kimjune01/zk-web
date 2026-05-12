@@ -26,10 +26,7 @@
                    :users {"admin" "hello"}
                    :default-node ""
                   })]
-        (if env-port
-          (assoc conf :server-port env-port)
-          conf)
-        (if env-node
-          (assoc conf :default-node env-node)
-          conf)))
+        (cond-> conf
+          env-port (assoc :server-port env-port)
+          env-node (assoc :default-node env-node))))
 
