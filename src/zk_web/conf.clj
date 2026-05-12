@@ -10,16 +10,21 @@
     (and (.exists file)
          (.isFile file))))
 
-(defn- load-conf-file [path]
+(defn load-conf-file [path]
   (when (valid-conf-file? path)
     (read-string (slurp path :encoding "utf-8"))))
 
+(defn getenv
+  "Wrapper around System/getenv for testability."
+  [k]
+  (System/getenv k))
+
 (defn load-conf []
   "load the config from ~/.zk-web-conf.clj or conf/zk-web-conf.clj"
-  (let [home-conf (str (System/getenv "HOME") File/separator ".zk-web-conf.clj")
+  (let [home-conf (str (getenv "HOME") File/separator ".zk-web-conf.clj")
         pwd-conf "conf/zk-web-conf.clj"
-        env-port (u/str->int (System/getenv "PORT"))
-        env-node (str (System/getenv "DEFAULT_NODE"))
+        env-port (u/str->int (getenv "PORT"))
+        env-node (getenv "DEFAULT_NODE")
         conf     (or (load-conf-file home-conf) (load-conf-file pwd-conf)
                   {
                    :server-port 8080
